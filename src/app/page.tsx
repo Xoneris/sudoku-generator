@@ -5,7 +5,7 @@ import { useState } from "react";
 import sudokuJson from "../json/sudoku.json"
 
 export default function Home() {
-  const [sudoku, setSudoku] = useState([
+  const [sudokuField, setSudokuField] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -40,10 +40,10 @@ export default function Home() {
     console.log(sudokuArray)
 
     if (sudokuArray.sudoku) {
-        setSudoku(sudokuArray.sudoku);
+        setSudokuField(sudokuArray.sudoku);
         setLoading(false);  
     } else if (sudokuArray.puzzle) {
-        setSudoku(sudokuArray.puzzle);
+        setSudokuField(sudokuArray.puzzle);
         setLoading(false);
     } else {
         console.error("No JSON found in response");
@@ -79,16 +79,16 @@ export default function Home() {
 
   return (
     <>
-      <button className="border rounded-lg p-2 bg-white" onClick={generateSudoku} disabled={loading}>
+      {/* <button className="border rounded-lg p-2 bg-white" onClick={generateSudoku} disabled={loading}>
         {loading ? "Generating..." : "Generate Sudoku"}
-      </button>
+      </button> */}
 
-      <div className="flex gap-2">
+      <div className="flex gap-4 flex-wrap justify-center w-4/5">
         {
           sudokuJson.map((sudoku) => (
             <button
-              className="w-8 border rounded-lg p-2 bg-white"
-              onClick={() => setSudoku(sudoku.puzzle)}
+              className={` ${sudokuField === sudoku.puzzle ? "bg-gray-300" : "bg-white hover:cursor-pointer hover:bg-gray-300" } w-12 border rounded-lg p-2  `}
+              onClick={() => setSudokuField(sudoku.puzzle)}
               key={sudoku.id}
             >
               {sudoku.id}
@@ -97,9 +97,9 @@ export default function Home() {
         }
       </div>
 
-      <div className="flex flex-wrap max-w-[360px] bg-white">
+      <div className="flex flex-wrap max-w-[360px] bg-white mt-4">
         {
-          sudoku.map((row) => row.map((number,index) => (
+          sudokuField.map((row) => row.map((number,index) => (
             <div className="w-10 h-10 flex justify-center items-center border" key={index}>
               <div className={`rounded-full w-6 h-6 transition-all ${determinColor(number)}`}></div>
             </div>
