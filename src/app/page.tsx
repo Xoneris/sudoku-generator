@@ -17,40 +17,52 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0, 0]
   ]);
   const [loading, setLoading] = useState(false);
+  const [difficulty, setDifficulty] = useState("")
 
-  const generateSudoku = async () => {
-    setLoading(true);
-    const response = await fetch("/api/generate", {
-      method: "POST",
-    });
-    console.log(response)
-    const text = await response.text();
+  // const generateSudoku = async () => {
 
-    console.log(text)
+  //   setLoading(true);
+  //   const response = await fetch("/api/generate", {
+  //     method: "POST",
+  //   });
+  //   console.log(response)
+  //   const text = await response.text();
 
-    const jsonObject = JSON.parse(text);
-    let sudokuString = jsonObject.sudoku;
+  //   console.log(text)
 
-    // Step 2: Remove unwanted characters using regex
-    sudokuString = sudokuString.replace(/```json|\n|```/g, "").trim();
+  //   const jsonObject = JSON.parse(text);
+  //   let sudokuString = jsonObject.sudoku;
 
-    // Step 3: Parse the cleaned string into valid JSON
-    const sudokuArray = JSON.parse(sudokuString);
+  //   // Step 2: Remove unwanted characters using regex
+  //   sudokuString = sudokuString.replace(/```json|\n|```/g, "").trim();
 
-    console.log(sudokuArray)
+  //   // Step 3: Parse the cleaned string into valid JSON
+  //   const sudokuArray = JSON.parse(sudokuString);
 
-    if (sudokuArray.sudoku) {
-        setSudokuField(sudokuArray.sudoku);
-        setLoading(false);  
-    } else if (sudokuArray.puzzle) {
-        setSudokuField(sudokuArray.puzzle);
-        setLoading(false);
-    } else {
-        console.error("No JSON found in response");
-        setLoading(false);
-    }
+  //   console.log(sudokuArray)
+
+  //   if (sudokuArray.sudoku) {
+  //       setSudokuField(sudokuArray.sudoku);
+  //       setLoading(false);  
+  //   } else if (sudokuArray.puzzle) {
+  //       setSudokuField(sudokuArray.puzzle);
+  //       setLoading(false);
+  //   } else {
+  //       console.error("No JSON found in response");
+  //       setLoading(false);
+  //   }
     
-  };
+  // };
+
+  const newBoard = async () => {
+    const response = await fetch("https://sudoku-api.vercel.app/api/dosuku?query={newboard(limit:1){grids{value,difficulty}}}")
+    const data = await response.json()
+
+    setSudokuField(data.newboard.grids[0].value)
+    setDifficulty(data.newboard.grids[0].difficulty)
+
+    // console.log(data.newboard.grids[0])
+  }
 
   function determinColor(number:number) {
     switch (number) {
@@ -83,7 +95,7 @@ export default function Home() {
         {loading ? "Generating..." : "Generate Sudoku"}
       </button> */}
 
-      <div className="flex gap-4 flex-wrap justify-center w-4/5">
+      {/* <div className="flex gap-4 flex-wrap justify-center w-4/5">
         {
           sudokuJson.map((sudoku) => (
             <button
@@ -94,8 +106,19 @@ export default function Home() {
               {sudoku.id}
             </button>
           ))
+          
         }
-      </div>
+        
+      </div> */}
+
+      <button
+        className="bg-white hover:cursor-pointer hover:bg-gray-300 w-[100px] border rounded-lg p-2"
+        onClick={() => newBoard()}
+      >
+        Neues Sudoku
+      </button>
+
+      <h2>Schwirigkeitsgrad: {difficulty}</h2>
 
       <div className="flex flex-wrap max-w-[360px] bg-white mt-4">
         {
